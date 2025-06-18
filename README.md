@@ -8,3 +8,9 @@
 6. Admin can manage other users' account.
 7. Admin can view all users and edit every users' account details.
 8. User can log out.
+
+default account:
+
+username: admin
+
+password: password
