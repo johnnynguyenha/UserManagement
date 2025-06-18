@@ -20,7 +20,7 @@ namespace UserManagement
         private string _username;
         User _user;
         public ChangePassword(UserService userService, User user)
-        {
+        {   
             InitializeComponent();
             _userService = userService;
             _user = user;

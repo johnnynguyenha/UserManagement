@@ -51,6 +51,7 @@ namespace UserManagement
         private void deleteButton_Click(object sender, EventArgs e)
         {
             deletePopup deletePop = new deletePopup(_user, this, _userService);
+            deletePop.StartPosition = FormStartPosition.CenterScreen;
             deletePop.Show();
         }
         // user presses manage button. if user is an admin, opens manage form to manage users.
@@ -62,12 +63,14 @@ namespace UserManagement
                 return;
             }
             Manage manage = new Manage(_userService, _user);
+            manage.StartPosition = FormStartPosition.CenterScreen;
             manage.Show();
         }
         // user presses edit details button. opens details form.
         private void editDetailsButton_Click_1(object sender, EventArgs e)
         {
             Details editDetails = new Details(_userService, _user);
+            editDetails.StartPosition = FormStartPosition.CenterScreen;
             editDetails.Show();
         }
 

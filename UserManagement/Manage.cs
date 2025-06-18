@@ -32,7 +32,6 @@ namespace UserManagement
             _user = user;
             _username = _user.UserName;
             SetVisibility(false);
-            
         }
 
         // FUNCTIONS //
@@ -65,12 +64,14 @@ namespace UserManagement
             lastNameLabel.Visible = setting;
             phoneLabel.Visible = setting;
             addressLabel.Visible = setting;
+            roleLabel.Visible = setting;
             usernameBox.Visible = setting;
             passwordBox.Visible = setting;
             firstNameBox.Visible = setting;
             lastNameBox.Visible = setting;
             phoneBox.Visible = setting;
             addressBox.Visible = setting;
+            roleBox.Visible = setting;
             applyButton.Visible = setting;
             _editVisible = setting;
         }
@@ -85,6 +86,7 @@ namespace UserManagement
             lastNameBox.Text = user.LastName;
             phoneBox.Text = user.PhoneNumber;
             addressBox.Text = user.Address;
+            roleBox.Text = user.Role;
         }
 
         // EVENTS //
@@ -92,6 +94,10 @@ namespace UserManagement
         // if user presses another user in the list, change the textboxes to match the user
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (listBox1.SelectedItem == null)
+            {
+                return;
+            }
             var username = listBox1.SelectedItem.ToString();
             _selecteduser = _userService.GetUserByUsername(username);
             if (_editVisible)
@@ -99,13 +105,25 @@ namespace UserManagement
                 FillUser(_selecteduser);
             }
         }
+
         // user presses delete. if a user is selected, open delete popup to confirm deletion.
         private void deleteButton_Click(object sender, EventArgs e)
         {
+            if (listBox1.SelectedItem == null)
+            {
+                MessageBox.Show("No user selected to delete");
+                return;
+            }
             if (listBox1.SelectedItem != null)
             {
+                if (listBox1.SelectedItem.ToString() == _username)
+                {
+                    MessageBox.Show("Cannot delete yourself from this menu. Please use the main menu.");
+                    return;
+                }
                 string username = listBox1.SelectedItem.ToString();
                 deletePopup delete = new deletePopup(username, _userService);
+                delete.StartPosition = FormStartPosition.CenterScreen;
                 delete.UserUpdated += UserUpdated;
                 delete.Show();
             }
@@ -137,10 +155,15 @@ namespace UserManagement
         // user presses apply button to apply changes.
         private void applyButton_Click(object sender, EventArgs e)
         {
+            bool selfEdit = false;
             if (_selecteduser == null)
             {
                 MessageBox.Show("No user");
                 return;
+            }
+            if (_selecteduser.UserName == _username)
+            {
+                selfEdit = true;
             }
             string newusername = usernameBox.Text;
             string password = passwordBox.Text;
@@ -148,14 +171,21 @@ namespace UserManagement
             string lastName = lastNameBox.Text;
             string phoneNumber = phoneBox.Text;
             string address = addressBox.Text;
-            if (_userService.ChangeDetails(_selecteduser, _selecteduser.UserName, newusername, password, firstName, lastName, phoneNumber, address))
+            string role = roleBox.Text;
+            if (_userService.ChangeDetails(_selecteduser, _selecteduser.UserName, newusername, password, firstName, lastName, phoneNumber, address, role))
             {
                 MessageBox.Show("Details were successfully changed");
             } else
             {
                 MessageBox.Show("Details were not successfully changed");
             }
-                FillList();
+            if (selfEdit)
+            {
+                _user = _userService.GetUserByUsername(newusername);
+                _username = _user.UserName;
+            }
+            FillList();
+            SetVisibility(false);
         }
     }
 }

@@ -24,7 +24,9 @@ namespace UserManagement
             UnitOfWork unitOfWork = new UnitOfWork(context);
             UserService userService = new UserService(unitOfWork);
             context.Users.FirstOrDefault(); // warmup entity framework
-            Application.Run(new loginForm(userService));
+            loginForm login = new loginForm(userService);
+            login.StartPosition = FormStartPosition.CenterScreen;
+            Application.Run(login);
         }
     }
 

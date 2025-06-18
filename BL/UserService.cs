@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DAL;
+using Model;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using DAL;
-using Model;
 
 namespace BL
 {
@@ -55,7 +56,7 @@ namespace BL
         // function that logs in user. return true if successful, false otherwise.
         public bool Login(string username, string password, out string message)
         {
-            if (string.IsNullOrEmpty(username) == true || string.IsNullOrEmpty(password) == true)
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 message = "Empty Field";
                 return false;
@@ -138,7 +139,7 @@ namespace BL
         }
 
         // function that changes user details. returns true if successful, false otherwise.
-        public bool ChangeDetails(User user, string username, string newusername, string password, string firstName, string lastName, string phoneNumber, string address)
+        public bool ChangeDetails(User user, string username, string newusername, string password, string firstName, string lastName, string phoneNumber, string address, string role)
         {
             if (user == null)
             {
@@ -152,6 +153,7 @@ namespace BL
                 _unitOfWork.Users.UpdateLastName(user, lastName);
                 _unitOfWork.Users.UpdatePhoneNumber(user, phoneNumber);
                 _unitOfWork.Users.UpdateAddress(user, address);
+                _unitOfWork.Users.UpdateRole(user, role);
                 _unitOfWork.Save();
                 return true;
             } catch
@@ -187,6 +189,16 @@ namespace BL
         public User GetUserByUsername(string username)
         {
             var user = _unitOfWork.Users.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new ArgumentException("Cannot find User. User not found");
+            }
+            return user;
+        }
+
+        public async Task<User> GetUserByUsernameAsync(string username)
+        {
+            var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
             if (user == null)
             {
                 throw new ArgumentException("Cannot find User. User not found");
@@ -250,6 +262,6 @@ namespace BL
             _unitOfWork.Save();
             message = "Password changed successfully";
             return true;
-        }
+        }   
     }
 }

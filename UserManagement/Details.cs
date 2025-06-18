@@ -105,6 +105,7 @@ namespace UserManagement
         private void changePasswordButton_Click(object sender, EventArgs e)
         {
             ChangePassword changePassword = new ChangePassword(_userService, _user);
+            changePassword.StartPosition = FormStartPosition.CenterScreen;
             changePassword.Show();
         }
     }

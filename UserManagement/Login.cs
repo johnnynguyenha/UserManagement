@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
@@ -38,6 +37,7 @@ namespace UserManagement
             {
                 var user = _userService.GetUserByUsername(username);
                 loggedInForm loginForm = new loggedInForm(user, _userService, this);
+                loginForm.StartPosition = FormStartPosition.CenterScreen;
                 loginForm.Show();
                 this.Hide();
             } else
@@ -50,12 +50,14 @@ namespace UserManagement
         private void forgotPasswordButton_Click(object sender, EventArgs e)
         {
             forgotPasswordForm changePasswordForm = new forgotPasswordForm(_userService);
+            changePasswordForm.StartPosition = FormStartPosition.CenterScreen;
             changePasswordForm.Show();
         }
         // user presses sign up button. opens sign up form.
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             SignUp signup = new SignUp(_userService);
+            signup.StartPosition = FormStartPosition.CenterScreen;
             signup.Show();
         }
     }

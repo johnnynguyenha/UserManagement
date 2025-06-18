@@ -3,26 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 using Model;
 
 namespace DAL
 {
     public class UserRepository : IUserRepository
     {
-        private DataContext context;
+        private DataContext _context;
 
         public UserRepository(DataContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public List<User> GetUsers()
         {
-            return context.Users.ToList();
+            return _context.Users.ToList();
         }
         public User GetUserByUsername(string username)
         {
-            return context.Users.FirstOrDefault(u => u.UserName == username);
+            return _context.Users.FirstOrDefault(u => u.UserName == username);
+        }
+
+        public async Task<User> GetUserByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
         }
         public void UpdatePassword(User _user, string password)
         {
@@ -48,6 +54,10 @@ namespace DAL
         {
             _user.Address = address;
         }
+        public void UpdateRole (User _user, string role)
+        {
+            _user.Role = role;
+        }
         public bool CreateUser(string username, string password, string role)
         {
             var newUser = new User()
@@ -56,14 +66,14 @@ namespace DAL
                 Password = password,
                 Role = "User"
             };
-            context.Users.Add(newUser);
+            _context.Users.Add(newUser);
             return true;
         }
         public bool DeleteUser(User user)
         {
             if (user != null)
             {
-                context.Users.Remove(user);
+                _context.Users.Remove(user);
                 return true;
             }
             return false;

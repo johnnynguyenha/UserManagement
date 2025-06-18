@@ -44,6 +44,8 @@
             this.phoneLabel = new System.Windows.Forms.Label();
             this.addressLabel = new System.Windows.Forms.Label();
             this.applyButton = new System.Windows.Forms.Button();
+            this.roleLabel = new System.Windows.Forms.Label();
+            this.roleBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // listBox1
@@ -174,7 +176,7 @@
             // 
             // applyButton
             // 
-            this.applyButton.Location = new System.Drawing.Point(731, 277);
+            this.applyButton.Location = new System.Drawing.Point(731, 324);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(57, 32);
             this.applyButton.TabIndex = 15;
@@ -182,11 +184,29 @@
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
+            // roleLabel
+            // 
+            this.roleLabel.AutoSize = true;
+            this.roleLabel.Location = new System.Drawing.Point(595, 280);
+            this.roleLabel.Name = "roleLabel";
+            this.roleLabel.Size = new System.Drawing.Size(36, 16);
+            this.roleLabel.TabIndex = 17;
+            this.roleLabel.Text = "Role";
+            // 
+            // roleBox
+            // 
+            this.roleBox.Location = new System.Drawing.Point(637, 277);
+            this.roleBox.Name = "roleBox";
+            this.roleBox.Size = new System.Drawing.Size(151, 22);
+            this.roleBox.TabIndex = 16;
+            // 
             // Manage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.roleLabel);
+            this.Controls.Add(this.roleBox);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.addressLabel);
             this.Controls.Add(this.phoneLabel);
@@ -228,5 +248,7 @@
         private System.Windows.Forms.Label phoneLabel;
         private System.Windows.Forms.Label addressLabel;
         private System.Windows.Forms.Button applyButton;
+        private System.Windows.Forms.Label roleLabel;
+        private System.Windows.Forms.TextBox roleBox;
     }
 }
