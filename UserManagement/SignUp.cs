@@ -21,6 +21,11 @@ namespace UserManagement
             InitializeComponent();
             _userService = userService;
         }
+
+        // FUNCTIONS //
+
+        // EVENTS //
+
         // user presses register button to create a new account. display message if successful or not.
         private void registerButton_Click(object sender, EventArgs e)
         {

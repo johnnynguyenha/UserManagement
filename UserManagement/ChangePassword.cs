@@ -27,6 +27,10 @@ namespace UserManagement
             _username = _user.UserName;
         }
 
+        // FUNCTIONS //
+
+        // EVENTS //
+
         // user presses apply button to change password. display message if successful or not.
 
         private void applyButton_Click_1(object sender, EventArgs e)

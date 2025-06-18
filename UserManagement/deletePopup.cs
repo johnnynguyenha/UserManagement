@@ -41,6 +41,10 @@ namespace UserManagement
             _userService = userService;
         }
 
+        // FUNCTIONS //
+
+        // EVENTS //
+
         // closes popup if user presses no
         private void noButton_Click(object sender, EventArgs e)
         {

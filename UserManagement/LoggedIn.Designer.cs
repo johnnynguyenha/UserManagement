@@ -32,6 +32,7 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.deleteButton = new System.Windows.Forms.Button();
             this.manageButton = new System.Windows.Forms.Button();
+            this.logOutButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // editDetailsButton
@@ -75,11 +76,23 @@
             this.manageButton.UseVisualStyleBackColor = true;
             this.manageButton.Click += new System.EventHandler(this.manageButton_Click);
             // 
+            // logOutButton
+            // 
+            this.logOutButton.BackColor = System.Drawing.Color.DarkRed;
+            this.logOutButton.Location = new System.Drawing.Point(683, 28);
+            this.logOutButton.Name = "logOutButton";
+            this.logOutButton.Size = new System.Drawing.Size(94, 29);
+            this.logOutButton.TabIndex = 4;
+            this.logOutButton.Text = "Log Out";
+            this.logOutButton.UseVisualStyleBackColor = false;
+            this.logOutButton.Click += new System.EventHandler(this.logOutButton_Click);
+            // 
             // loggedInForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.logOutButton);
             this.Controls.Add(this.manageButton);
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.titleLabel);
@@ -97,5 +110,6 @@
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.Button manageButton;
+        private System.Windows.Forms.Button logOutButton;
     }
 }

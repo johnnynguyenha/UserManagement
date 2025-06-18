@@ -27,6 +27,10 @@ namespace UserManagement
             _userService = userService;
         }
 
+        // FUNCTIONS //
+
+        // EVENTS //
+
         // user presses apply button to reset password. display message if successful or not.
         private void applyButton_Click(object sender, EventArgs e)
         {

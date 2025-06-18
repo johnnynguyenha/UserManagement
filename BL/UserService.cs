@@ -19,6 +19,9 @@ namespace BL
             _unitOfWork = unitOfWork;
         }
 
+
+        // FUNCTIONS //
+
         // function that resets password for user. return true if successful, false otherwise.
         public bool ResetPassword(string username, string newpassword, string confirmpassword, out string message)
         {
@@ -37,7 +40,7 @@ namespace BL
             {
                 message = "Passwords do not match";
                 return false;
-            } 
+            }
             if (newpassword == user.Password)
             {
                 message = "Password is the same as the old password";
@@ -158,7 +161,7 @@ namespace BL
         }
 
         // function that changes user details without changing password. returns true if successful, false otherwise.
-        public bool ChangeDetails(User user, string username, string newusername, string firstName, string lastName, string phoneNumber, string address)
+        public bool ChangeDetailsNoPassword(User user, string username, string newusername, string firstName, string lastName, string phoneNumber, string address)
         {
             if (user == null)
             {

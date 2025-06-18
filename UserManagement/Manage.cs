@@ -34,16 +34,9 @@ namespace UserManagement
             SetVisibility(false);
             
         }
-        // if user presses another user in the list, change the textboxes to match the user
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var username = listBox1.SelectedItem.ToString();
-            _selecteduser = _userService.GetUserByUsername(username);
-            if (_editVisible)
-            {
-                FillUser(_selecteduser);
-            }
-        }
+
+        // FUNCTIONS //
+
         // fills the list box with users.
         private void FillList()
         {
@@ -63,6 +56,49 @@ namespace UserManagement
             }
         }
 
+        // function to change visibility of labels and textboxes.
+        private void SetVisibility(bool setting)
+        {
+            usernameLabel.Visible = setting;
+            passwordLabel.Visible = setting;
+            firstNameLabel.Visible = setting;
+            lastNameLabel.Visible = setting;
+            phoneLabel.Visible = setting;
+            addressLabel.Visible = setting;
+            usernameBox.Visible = setting;
+            passwordBox.Visible = setting;
+            firstNameBox.Visible = setting;
+            lastNameBox.Visible = setting;
+            phoneBox.Visible = setting;
+            addressBox.Visible = setting;
+            applyButton.Visible = setting;
+            _editVisible = setting;
+        }
+
+        // function to fill boxes with user details.
+        private void FillUser(User user)
+        {
+            if (user == null) return;
+            usernameBox.Text = user.UserName;
+            passwordBox.Text = user.Password;
+            firstNameBox.Text = user.FirstName;
+            lastNameBox.Text = user.LastName;
+            phoneBox.Text = user.PhoneNumber;
+            addressBox.Text = user.Address;
+        }
+
+        // EVENTS //
+
+        // if user presses another user in the list, change the textboxes to match the user
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var username = listBox1.SelectedItem.ToString();
+            _selecteduser = _userService.GetUserByUsername(username);
+            if (_editVisible)
+            {
+                FillUser(_selecteduser);
+            }
+        }
         // user presses delete. if a user is selected, open delete popup to confirm deletion.
         private void deleteButton_Click(object sender, EventArgs e)
         {
@@ -98,25 +134,6 @@ namespace UserManagement
             }
         }
 
-        // function to change visibility of labels and textboxes.
-        private void SetVisibility(bool setting)
-        {
-            usernameLabel.Visible = setting;
-            passwordLabel.Visible = setting;
-            firstNameLabel.Visible = setting;
-            lastNameLabel.Visible = setting;
-            phoneLabel.Visible = setting;
-            addressLabel.Visible = setting;
-            usernameBox.Visible = setting;
-            passwordBox.Visible = setting;
-            firstNameBox.Visible = setting;
-            lastNameBox.Visible = setting;
-            phoneBox.Visible = setting;
-            addressBox.Visible = setting;
-            applyButton.Visible = setting;
-            _editVisible = setting;
-        }
-
         // user presses apply button to apply changes.
         private void applyButton_Click(object sender, EventArgs e)
         {
@@ -139,18 +156,6 @@ namespace UserManagement
                 MessageBox.Show("Details were not successfully changed");
             }
                 FillList();
-        }
-
-        // function to fill boxes with user details.
-        private void FillUser(User user)
-        {
-            if (user == null) return;
-            usernameBox.Text = user.UserName;
-            passwordBox.Text = user.Password;
-            firstNameBox.Text = user.FirstName;
-            lastNameBox.Text = user.LastName;
-            phoneBox.Text = user.PhoneNumber;
-            addressBox.Text = user.Address;
         }
     }
 }

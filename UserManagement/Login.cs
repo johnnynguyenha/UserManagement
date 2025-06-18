@@ -9,7 +9,6 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DAL;
 using BL;
 using Model;
 
@@ -20,15 +19,16 @@ namespace UserManagement
     public partial class loginForm : Form
     {
         UserService _userService;
-        UnitOfWork _unitOfWork;
-        public loginForm()
+        public loginForm(UserService userService)
         {
             InitializeComponent();
-            DataContext context = new DataContext();
-            context.Users.FirstOrDefault(); // warmup entity framework
-            _unitOfWork = new UnitOfWork(context);
-            _userService = new UserService(_unitOfWork);
+            _userService = userService;
         }
+
+        // FUNCTIONS //
+
+        // EVENTS //
+
         // user presses login button. if login is successful, open logged in form. if not, display error message.
         private void loginButton_Click(object sender, EventArgs e)
         {
@@ -37,7 +37,7 @@ namespace UserManagement
             if (_userService.Login(username, password, out string message))
             {
                 var user = _userService.GetUserByUsername(username);
-                loggedInForm loginForm = new loggedInForm(user, _userService);
+                loggedInForm loginForm = new loggedInForm(user, _userService, this);
                 loginForm.Show();
                 this.Hide();
             } else

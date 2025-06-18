@@ -32,6 +32,8 @@ namespace UserManagement
             _password = _userService.GetPassword(_username);
         }
 
+        // FUNCTIONS //
+
         // fills the text boxes with user details of the User. if there's an error, show message box.
         private void fillDetails()
         {
@@ -63,6 +65,8 @@ namespace UserManagement
             addressBox.Enabled = setting;
         }
 
+        // EVENTS //
+
         // user presses edit button to enable text boxes for editing.
 
         private void editButton_Click(object sender, EventArgs e)
@@ -84,7 +88,7 @@ namespace UserManagement
             string lastName = lastNameBox.Text;
             string phoneNumber = phoneBox.Text;
             string address = addressBox.Text;
-            if (_userService.ChangeDetails(_user, _username, newusername, firstName, lastName, phoneNumber, address))
+            if (_userService.ChangeDetailsNoPassword(_user, _username, newusername, firstName, lastName, phoneNumber, address))
             {
                 MessageBox.Show("Details were successfully changed");
                 _username = newusername;

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Entity;
+using BL;
+using DAL;
+using Model;
 
 namespace UserManagement
 {
@@ -17,7 +20,11 @@ namespace UserManagement
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new loginForm());
+            DataContext context = new DataContext();
+            UnitOfWork unitOfWork = new UnitOfWork(context);
+            UserService userService = new UserService(unitOfWork);
+            context.Users.FirstOrDefault(); // warmup entity framework
+            Application.Run(new loginForm(userService));
         }
     }
 
