@@ -46,6 +46,7 @@
             this.applyButton = new System.Windows.Forms.Button();
             this.roleLabel = new System.Windows.Forms.Label();
             this.roleBox = new System.Windows.Forms.TextBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // listBox1
@@ -200,11 +201,19 @@
             this.roleBox.Size = new System.Drawing.Size(151, 22);
             this.roleBox.TabIndex = 16;
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(143, 196);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.TabIndex = 18;
+            // 
             // Manage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.roleLabel);
             this.Controls.Add(this.roleBox);
             this.Controls.Add(this.applyButton);
@@ -250,5 +259,6 @@
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.Label roleLabel;
         private System.Windows.Forms.TextBox roleBox;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

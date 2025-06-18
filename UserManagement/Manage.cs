@@ -21,6 +21,7 @@ namespace UserManagement
         UserService _userService;
         string _username;
         bool _editVisible;
+        bool _isFilling;
         User _user;
         User _selecteduser;
         public Manage(UserService userService, User user)
@@ -28,7 +29,8 @@ namespace UserManagement
             InitializeComponent();
             _userService = userService;
             userList = _userService.GetUserList();
-            FillList();
+            FillListAsync();
+            progressBar1.Style = ProgressBarStyle.Marquee;
             _user = user;
             _username = _user.UserName;
             SetVisibility(false);
@@ -53,6 +55,32 @@ namespace UserManagement
                     listBox1.Items.Add(_userService.GetUserName(user));
                 }
             }
+        }
+
+        // function to fill list with users asynchronously.
+        private async Task FillListAsync()
+        {
+            progressBar1.Visible = true;
+            _isFilling = true;
+            HideButtons(_isFilling);
+            listBox1.Items.Clear();
+            userList = await _userService.GetUserListAsync();
+            // await Task.Delay(5000); // Simulate a delay for filling the list
+            if (userList == null || userList.Count == 0)
+            {
+                MessageBox.Show("No users found");
+                return;
+            }
+            foreach (User user in userList)
+            {
+                if (user != null)
+                {
+                    listBox1.Items.Add(_userService.GetUserName(user));
+                }
+            }
+            progressBar1.Visible = false;
+            _isFilling = false;
+            HideButtons(_isFilling);
         }
 
         // function to change visibility of labels and textboxes.
@@ -89,6 +117,18 @@ namespace UserManagement
             roleBox.Text = user.Role;
         }
 
+        private void HideButtons(bool filling)
+        {
+            if (filling)
+            {
+                deleteButton.Visible = false;
+                editButton.Visible = false;
+            } else
+            {
+                deleteButton.Visible = true;
+                editButton.Visible = true;
+            }
+        }
         // EVENTS //
 
         // if user presses another user in the list, change the textboxes to match the user
@@ -132,7 +172,7 @@ namespace UserManagement
         // user updated event to refresh user list.
         private void UserUpdated(object sender, EventArgs e)
         {
-            FillList();
+            FillListAsync();
         }
 
         // user presses edit button. if user is selected, show textboxes for editing user details.
@@ -184,7 +224,7 @@ namespace UserManagement
                 _user = _userService.GetUserByUsername(newusername);
                 _username = _user.UserName;
             }
-            FillList();
+            FillListAsync();
             SetVisibility(false);
         }
     }

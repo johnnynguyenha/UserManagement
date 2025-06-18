@@ -105,6 +105,10 @@ namespace BL
         public bool DeleteAccount(string username)
         {
             var user = _unitOfWork.Users.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new ArgumentException("Cannot Delete Account. User not found");
+            }
             if (_unitOfWork.Users.DeleteUser(user))
             {
                 _unitOfWork.Save();
@@ -130,6 +134,12 @@ namespace BL
         public List<User> GetUserList()
         {
             return _unitOfWork.Users.GetUsers();
+        }
+
+        // function that gets the userlist asynchronously. returns a list of users.
+        public async Task<List<User>> GetUserListAsync()
+        {
+            return await _unitOfWork.Users.GetUsersAsync();
         }
 
         // function that gets the role of a user. returns the role as a string.
