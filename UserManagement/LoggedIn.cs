@@ -80,5 +80,11 @@ namespace UserManagement
             this.Dispose();
             _login.Show();
         }
+
+        // user closes the form instead of logging out, disposes the entire app.
+        private void loggedInForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _login.Dispose();
+        }
     }
 }

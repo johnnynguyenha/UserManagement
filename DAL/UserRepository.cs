@@ -21,6 +21,10 @@ namespace DAL
         {
             return _context.Users.ToList();
         }
+        public async Task<List<User>> GetUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
         public User GetUserByUsername(string username)
         {
             return _context.Users.FirstOrDefault(u => u.UserName == username);

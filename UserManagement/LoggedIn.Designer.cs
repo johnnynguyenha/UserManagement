@@ -99,6 +99,7 @@
             this.Controls.Add(this.editDetailsButton);
             this.Name = "loggedInForm";
             this.Text = "LoggedIn";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.loggedInForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

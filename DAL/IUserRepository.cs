@@ -11,6 +11,7 @@ namespace DAL
     public interface IUserRepository
     {
         List<User> GetUsers();
+        Task<List<User>> GetUsersAsync();
         User GetUserByUsername(string username);
         Task<User> GetUserByUsernameAsync(string username);
         void UpdatePassword(User _user, string password);

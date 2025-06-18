@@ -19,7 +19,6 @@ namespace UserManagement
     {
         private readonly UserService _userService;
         private string _username;
-        User _user;
 
         public forgotPasswordForm(UserService userService)
         {
