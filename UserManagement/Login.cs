@@ -16,9 +16,9 @@ using Model;
 
 namespace UserManagement
 {
+    // main login page. user enters username and password to login.
     public partial class loginForm : Form
     {
-        // DataService dataService;
         UserService _userService;
         UnitOfWork _unitOfWork;
         public loginForm()
@@ -26,35 +26,33 @@ namespace UserManagement
             InitializeComponent();
             DataContext context = new DataContext();
             context.Users.FirstOrDefault(); // warmup entity framework
-            // dataService = new DataService(context);
             _unitOfWork = new UnitOfWork(context);
             _userService = new UserService(_unitOfWork);
         }
-
+        // user presses login button. if login is successful, open logged in form. if not, display error message.
         private void loginButton_Click(object sender, EventArgs e)
         {
             string username = textBox1.Text;
             string password = passwordBox.Text;
-            string message = "";
-            if (_userService.Login(username, password, out message))
+            if (_userService.Login(username, password, out string message))
             {
-                loggedInForm loginForm = new loggedInForm(username, _userService);
+                var user = _userService.GetUserByUsername(username);
+                loggedInForm loginForm = new loggedInForm(user, _userService);
                 loginForm.Show();
-                
+                this.Hide();
             } else
             {
-                PopUp popupForm = new PopUp(message);
-                popupForm.Show();
+                MessageBox.Show(message);
             }
             
         }
-
+        // user presses forgot password button. opens forgot password form.
         private void forgotPasswordButton_Click(object sender, EventArgs e)
         {
-            forgotPasswordForm changePasswordForm = new forgotPasswordForm(_userService, "");
+            forgotPasswordForm changePasswordForm = new forgotPasswordForm(_userService);
             changePasswordForm.Show();
         }
-
+        // user presses sign up button. opens sign up form.
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             SignUp signup = new SignUp(_userService);

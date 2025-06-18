@@ -205,7 +205,6 @@
             this.Controls.Add(this.listBox1);
             this.Name = "Manage";
             this.Text = "Manage";
-            this.Load += new System.EventHandler(this.Manage_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BL;
+using Model;
 
 namespace UserManagement
 {
+    // form for signing up a new user (user is not logged in). user must enter username and password in order to register.
     public partial class SignUp : Form
     {
         UserService _userService;
@@ -19,7 +21,7 @@ namespace UserManagement
             InitializeComponent();
             _userService = userService;
         }
-
+        // user presses register button to create a new account. display message if successful or not.
         private void registerButton_Click(object sender, EventArgs e)
         {
             string username = usernameBox.Text;
@@ -34,8 +36,7 @@ namespace UserManagement
             {
                 message = "Passwords do not match";
             }
-            PopUp popupForm = new PopUp(message);
-            popupForm.Show();
+            MessageBox.Show(message);
         }
     }
 }

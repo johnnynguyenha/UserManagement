@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,28 +13,32 @@ using Model;
 namespace UserManagement
 {
 
-    // form for resetting password (user is not logged in). user must enter username and new password.
-    public partial class forgotPasswordForm : Form
+    // form for changing password from details menu (user is logged in).
+    public partial class ChangePassword : Form
     {
         private readonly UserService _userService;
         private string _username;
         User _user;
-
-        public forgotPasswordForm(UserService userService)
+        public ChangePassword(UserService userService, User user)
         {
             InitializeComponent();
             _userService = userService;
+            _user = user;
+            _username = _user.UserName;
         }
 
-        // user presses apply button to reset password. display message if successful or not.
-        private void applyButton_Click(object sender, EventArgs e)
+        // user presses apply button to change password. display message if successful or not.
+
+        private void applyButton_Click_1(object sender, EventArgs e)
         {
-            _username = usernameBox.Text;
+            string oldpassword = oldPasswordBox.Text;
             string newpassword = newPasswordBox.Text;
             string confirmpassword = confirmPasswordBox.Text;
-            if (_userService.ResetPassword(_username, newpassword, confirmpassword, out string message))
+            string message = "";
+            if (_userService.ChangePassword(_username, oldpassword, newpassword, confirmpassword, out message))
             {
                 MessageBox.Show(message);
+                this.Close();
             }
             else
             {

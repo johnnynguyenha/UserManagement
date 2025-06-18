@@ -13,48 +13,47 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace UserManagement
 {
+
+    // form for managing users (admin or user). allows editing, deleting, and viewing user details.
     public partial class Manage : Form
     {
         List<User> userList;
         UserService _userService;
         string _username;
         bool _editVisible;
-        public Manage(UserService userService, string username)
+        User _user;
+        User _selecteduser;
+        public Manage(UserService userService, User user)
         {
             InitializeComponent();
             _userService = userService;
             userList = _userService.GetUserList();
             FillList();
-            _username = username;
-            editInvisible();
+            _user = user;
+            _username = _user.UserName;
+            SetVisibility(false);
             
         }
-
+        // if user presses another user in the list, change the textboxes to match the user
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            var username = listBox1.SelectedItem.ToString();
+            _selecteduser = _userService.GetUserByUsername(username);
             if (_editVisible)
             {
-                var username = listBox1.SelectedItem.ToString();
-                User user = _userService.GetUserByUsername(username);
-                usernameBox.Text = user.UserName;
-                passwordBox.Text = user.Password;
-                firstNameBox.Text = user.FirstName;
-                lastNameBox.Text = user.LastName;
-                phoneBox.Text = user.PhoneNumber;
-                addressBox.Text = user.Address;
-
+                FillUser(_selecteduser);
             }
         }
-
-        private void Manage_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        // fills the list box with users.
         private void FillList()
         {
             listBox1.Items.Clear();
             userList = _userService.GetUserList();
+            if (userList == null || userList.Count == 0)
+            {
+                MessageBox.Show("No users found");
+                return;
+            }
             foreach (User user in userList)
             {
                 if (user != null)
@@ -64,6 +63,7 @@ namespace UserManagement
             }
         }
 
+        // user presses delete. if a user is selected, open delete popup to confirm deletion.
         private void deleteButton_Click(object sender, EventArgs e)
         {
             if (listBox1.SelectedItem != null)
@@ -74,73 +74,83 @@ namespace UserManagement
                 delete.Show();
             }
         }
+
+        // user updated event to refresh user list.
         private void UserUpdated(object sender, EventArgs e)
         {
             FillList();
         }
 
+        // user presses edit button. if user is selected, show textboxes for editing user details.
         private void editButton_Click(object sender, EventArgs e)
         {
             if (listBox1.SelectedItem != null)
             {
-                editVisible();
+                SetVisibility(true);
                 string username = listBox1.SelectedItem.ToString();
                 User user = _userService.GetUserByUsername(username);
-                usernameBox.Text = user.UserName;
-                passwordBox.Text = user.Password;
-                firstNameBox.Text = user.FirstName;
-                lastNameBox.Text = user.LastName;
-                phoneBox.Text = user.PhoneNumber;
-                addressBox.Text = user.Address;
+                if (user == null)
+                {
+                    MessageBox.Show("User not found");
+                    return;
+                }
+                FillUser(user);
             }
         }
 
-        private void editInvisible()
+        // function to change visibility of labels and textboxes.
+        private void SetVisibility(bool setting)
         {
-            usernameLabel.Visible = false;
-            passwordLabel.Visible = false;
-            firstNameLabel.Visible = false;
-            lastNameLabel.Visible = false;
-            phoneLabel.Visible = false;
-            addressLabel.Visible = false;
-            usernameBox.Visible = false;
-            passwordBox.Visible = false;
-            firstNameBox.Visible = false;
-            lastNameBox.Visible = false;
-            phoneBox.Visible = false;
-            addressBox.Visible = false;
-            applyButton.Visible = false;
-            _editVisible = false;
+            usernameLabel.Visible = setting;
+            passwordLabel.Visible = setting;
+            firstNameLabel.Visible = setting;
+            lastNameLabel.Visible = setting;
+            phoneLabel.Visible = setting;
+            addressLabel.Visible = setting;
+            usernameBox.Visible = setting;
+            passwordBox.Visible = setting;
+            firstNameBox.Visible = setting;
+            lastNameBox.Visible = setting;
+            phoneBox.Visible = setting;
+            addressBox.Visible = setting;
+            applyButton.Visible = setting;
+            _editVisible = setting;
         }
 
-        private void editVisible()
-        {
-            usernameLabel.Visible = true;
-            passwordLabel.Visible = true;
-            firstNameLabel.Visible = true;
-            lastNameLabel.Visible = true;
-            phoneLabel.Visible = true;
-            addressLabel.Visible = true;
-            usernameBox.Visible = true;
-            passwordBox.Visible = true;
-            firstNameBox.Visible = true;
-            lastNameBox.Visible = true;
-            phoneBox.Visible = true;
-            addressBox.Visible = true;
-            applyButton.Visible = true;
-            _editVisible = true;
-        }
-
+        // user presses apply button to apply changes.
         private void applyButton_Click(object sender, EventArgs e)
         {
-            string username = usernameBox.Text;
+            if (_selecteduser == null)
+            {
+                MessageBox.Show("No user");
+                return;
+            }
+            string newusername = usernameBox.Text;
             string password = passwordBox.Text;
             string firstName = firstNameBox.Text;
             string lastName = lastNameBox.Text;
             string phoneNumber = phoneBox.Text;
             string address = addressBox.Text;
-            _userService.ChangeDetails(username, password, firstName, lastName, phoneNumber, address);
-            FillList();
+            if (_userService.ChangeDetails(_selecteduser, _selecteduser.UserName, newusername, password, firstName, lastName, phoneNumber, address))
+            {
+                MessageBox.Show("Details were successfully changed");
+            } else
+            {
+                MessageBox.Show("Details were not successfully changed");
+            }
+                FillList();
+        }
+
+        // function to fill boxes with user details.
+        private void FillUser(User user)
+        {
+            if (user == null) return;
+            usernameBox.Text = user.UserName;
+            passwordBox.Text = user.Password;
+            firstNameBox.Text = user.FirstName;
+            lastNameBox.Text = user.LastName;
+            phoneBox.Text = user.PhoneNumber;
+            addressBox.Text = user.Address;
         }
     }
 }

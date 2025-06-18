@@ -40,7 +40,7 @@
             this.editDetailsButton.Name = "editDetailsButton";
             this.editDetailsButton.Size = new System.Drawing.Size(114, 44);
             this.editDetailsButton.TabIndex = 0;
-            this.editDetailsButton.Text = "Edit Details";
+            this.editDetailsButton.Text = "Details";
             this.editDetailsButton.UseVisualStyleBackColor = true;
             this.editDetailsButton.Click += new System.EventHandler(this.editDetailsButton_Click_1);
             // 
@@ -54,7 +54,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "label1";
             this.titleLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.titleLabel.Click += new System.EventHandler(this.titleLabel_Click);
             // 
             // deleteButton
             // 

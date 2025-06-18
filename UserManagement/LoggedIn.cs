@@ -8,51 +8,49 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BL;
-using DAL;
 using Model;
 
 namespace UserManagement
 {
+
+    // Form for when user is logged in. Displays different if user is an admin or a regular user.
     public partial class loggedInForm : Form
     {
         UserService _userService;
+        User _user;
         string _username;
-        public loggedInForm(string username, UserService userService)
+        public loggedInForm(User user, UserService userService)
         {
             InitializeComponent();
-            _username = username;
             _userService = userService;
+            _user = user;
+            _username = _user.UserName;
             titleLabel.Text = "Welcome " + _username;
             checkRole();
 
         }
 
-        private void editDetailsButton_Click(object sender, EventArgs e)
-        {
-            forgotPasswordForm forgotPasswordForm = new forgotPasswordForm(_userService, _username);
-            forgotPasswordForm.Show();
-        }
-
+        // User presses delete button to delete their account. Displays delete account form.
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            deletePopup deletePop = new deletePopup(_username, this, _userService);
+            deletePopup deletePop = new deletePopup(_user, this, _userService);
             deletePop.Show();
         }
-
+        // user presses manage button. if user is an admin, opens manage form to manage users.
         private void manageButton_Click(object sender, EventArgs e)
         {
-            Manage manage = new Manage(_userService, _username);
+            if (_userService.GetRole(_user) != "Admin")
+            {
+                MessageBox.Show("You do not have permission to manage users.");
+                return;
+            }
+            Manage manage = new Manage(_userService, _user);
             manage.Show();
         }
-
-        private void titleLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        // function to check if the user is an admin. if the user is an admin, show/hide manage button.
         private void checkRole()
         {
-            if (_userService.GetRole(_username) == "Admin")
+            if (_userService.GetRole(_user) == "Admin")
             {
                 manageButton.Show();
             } else
@@ -60,10 +58,11 @@ namespace UserManagement
                 manageButton.Hide();
             }
         }
-
+        // user presses edit details button. opens details form.
         private void editDetailsButton_Click_1(object sender, EventArgs e)
         {
-
+            Details editDetails = new Details(_userService, _user);
+            editDetails.Show();
         }
     }
 }

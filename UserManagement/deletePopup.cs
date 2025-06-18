@@ -12,19 +12,27 @@ using Model;
 
 namespace UserManagement
 {
+
+    // form for confirming deleting account (user is logged in or not).
     public partial class deletePopup : Form
     {
         string _username;
         Form _loggedin;
         UserService _userService;
         public EventHandler UserUpdated;
-        public deletePopup(string username, Form loggedin, UserService userService)
+        User _user;
+
+        // constructor for if user is logged in (delete account from logged in menu).
+        public deletePopup(User user, Form loggedin, UserService userService)
         {
             InitializeComponent();
-            _username = username;
+            _user = user;
+            _username = _user.UserName;
             _loggedin = loggedin;
             _userService = userService;
         }
+
+        // overloaded constructor for if user is not logged in (delete account from different menu).
         public deletePopup(string username, UserService userService)
         {
             InitializeComponent();
@@ -33,24 +41,25 @@ namespace UserManagement
             _userService = userService;
         }
 
+        // closes popup if user presses no
         private void noButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Dispose();
         }
 
+
+        // user presses yes to delete account. if account is deleted, log out. if not, display error message.
         private void yesButton_Click(object sender, EventArgs e)
         {
             if (_userService.DeleteAccount(_username))
             {
-                PopUp accountDelete = new PopUp("Account Deleted");
-                accountDelete.ShowDialog();
-                _loggedin.Close();
-                UserUpdated?.Invoke(this, EventArgs.Empty);
+                MessageBox.Show("Account Deleted");
+                _loggedin.Dispose();
+                UserUpdated?.Invoke(this, EventArgs.Empty); // notify user list has been updated.
                 this.Close();
             } else
             {
-                PopUp accountnoDelete = new PopUp("Account Couldn't Be Deleted");
-                accountnoDelete.ShowDialog();
+                MessageBox.Show("Account Couldn't Be Deleted");
             }
         }
     }

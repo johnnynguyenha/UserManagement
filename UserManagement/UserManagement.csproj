@@ -56,23 +56,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangePassword.Designer.cs">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
+    </Compile>
     <Compile Include="deletePopup.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="deletePopup.Designer.cs">
       <DependentUpon>deletePopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Details.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Details.Designer.cs">
+      <DependentUpon>Details.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PopUp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PopUp.Designer.cs">
-      <DependentUpon>PopUp.cs</DependentUpon>
     </Compile>
     <Compile Include="ForgotPassword.cs">
       <SubType>Form</SubType>
@@ -100,14 +106,17 @@
     <Compile Include="SignUp.Designer.cs">
       <DependentUpon>SignUp.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ChangePassword.resx">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="deletePopup.resx">
       <DependentUpon>deletePopup.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Details.resx">
+      <DependentUpon>Details.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PopUp.resx">
-      <DependentUpon>PopUp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ForgotPassword.resx">
       <DependentUpon>ForgotPassword.cs</DependentUpon>

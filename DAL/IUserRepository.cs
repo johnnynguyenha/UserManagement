@@ -20,6 +20,6 @@ namespace DAL
         bool CreateUser(string username, string password, string role);
         bool DeleteUser(User user);
         string GetUsername(User user);
-        string GetRole(string username);
+        string GetRole(User user);
     }
 }

@@ -72,9 +72,9 @@ namespace DAL
         {
             return user.UserName;
         }
-        public string GetRole(string username)
+        public string GetRole(User user)
         {
-            return GetUserByUsername(username).Role;
+            return user.Role;
         }
     }
 }
