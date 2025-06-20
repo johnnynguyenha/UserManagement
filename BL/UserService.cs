@@ -35,6 +35,7 @@ namespace BL
                 return false;
             }
             var user = _unitOfWork.Users.GetUserByUsername(username);
+
             if (user == null)
             {
                 message = "Username does not exist";
