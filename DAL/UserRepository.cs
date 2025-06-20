@@ -108,7 +108,7 @@ namespace DAL
             {
                 UserName = username,
                 Password = password,
-                Role = "User"
+                Role = role
             };
             _context.Users.Add(newUser);
             return true;

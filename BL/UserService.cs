@@ -1,25 +1,28 @@
 ﻿using DAL;
+using DevOne.Security.Cryptography.BCrypt;
 using Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using BCrypt.Net;
 
 namespace BL
 {
     // class that handles the business logic and talks to the data access layer (DAL) for user management.
     public class UserService
     {
+        private static readonly log4net.ILog log = LogHelper.GetLogger();
         private readonly IUnitOfWork _unitOfWork;
         public UserService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-
 
         // FUNCTIONS //
 
@@ -42,13 +45,23 @@ namespace BL
                 message = "Passwords do not match";
                 return false;
             }
-            if (newpassword == user.Password)
+            if (PasswordHelper.VerifyPassword(newpassword, user.Password))
             {
-                message = "Password is the same as the old password";
+                message = "New password is the same as the old password";
                 return false;
-            } 
-            _unitOfWork.Users.UpdatePassword(user, newpassword);
-            _unitOfWork.Save();
+            }
+            try
+            {
+                string hashedPassword = PasswordHelper.HashPassword(newpassword);
+                _unitOfWork.Users.UpdatePassword(user, hashedPassword);
+                _unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in ResetPassword for user {username}", ex);
+                message = "An error occurred while resetting the password";
+                return false;
+            }
             message = "Password Changed Succesfully";
             return true;
         }
@@ -56,24 +69,33 @@ namespace BL
         // function that logs in user. return true if successful, false otherwise.
         public User Login(string username, string password, out string message)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            try
             {
-                message = "Empty Field";
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                {
+                    message = "Empty Field";
+                    return null;
+                }
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+                if (user == null)
+                {
+                    message = "Username does not exist";
+                    return null;
+                }
+                if (!PasswordHelper.VerifyPassword(password, user.Password))
+                {
+                    message = "Username and Password do not match";
+                    return null;
+                }
+                message = "Login Success";
+                return user;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in Login for user {username}", ex);
+                message = "An error occurred while logging in";
                 return null;
             }
-            var user = _unitOfWork.Users.GetUserByUsername(username);
-            if (user == null)
-            {
-                message = "Username does not exist";
-                return null; 
-            }
-            if (user.Password != password)
-            {
-                message = "Username and Password do not match";
-                return null;
-            }
-            message = "Login Success";
-            return user;
         }
 
         // function that registers a new user. return true if successful, false otherwise.
@@ -89,13 +111,14 @@ namespace BL
             {
                 message = "Username Already Exists";
                 return false;
-            } 
+            }
             if (password != confirmPassword)
             {
                 message = "Could not Register. Passwords do not match";
                 return false;
             }
-            _unitOfWork.Users.CreateUser(username, password, "User");
+            string hashedPassword = PasswordHelper.HashPassword(password);
+            _unitOfWork.Users.CreateUser(username, hashedPassword, "User");
             _unitOfWork.Save();
             message = "Register was Successful";
             return true;
@@ -151,6 +174,7 @@ namespace BL
         // function that changes user details. returns true if successful, false otherwise.
         public bool ChangeDetails(User user, string username, string newusername, string password, string firstName, string lastName, string phoneNumber, string address, string role)
         {
+            string hashedPassword = PasswordHelper.HashPassword(password);
             if (user == null)
             {
                 return false;
@@ -158,7 +182,7 @@ namespace BL
             try
             {
                 _unitOfWork.Users.UpdateUserName(user, newusername);
-                _unitOfWork.Users.UpdatePassword(user, password);
+                _unitOfWork.Users.UpdatePassword(user, hashedPassword);
                 _unitOfWork.Users.UpdateFirstName(user, firstName);
                 _unitOfWork.Users.UpdateLastName(user, lastName);
                 _unitOfWork.Users.UpdatePhoneNumber(user, phoneNumber);
@@ -220,6 +244,7 @@ namespace BL
 
         public void SetPassword(string username, string password)
         {
+            string hashedPassword = PasswordHelper.HashPassword(password);
             var user = _unitOfWork.Users.GetUserByUsername(username);
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
@@ -229,7 +254,7 @@ namespace BL
             {
                 throw new ArgumentException("Cannot Set Password. User not found");
             }
-            _unitOfWork.Users.UpdatePassword(user, password);
+            _unitOfWork.Users.UpdatePassword(user, hashedPassword);
             _unitOfWork.Save();
         }
 
@@ -247,13 +272,14 @@ namespace BL
         // function that changes password of user. returns true if successful, false otherwise.
         public bool ChangePassword(string username, string oldpassword, string newpassword, string confirmpassword, out string message)
         {
+            string hashedPassword = PasswordHelper.HashPassword(newpassword);
             var user = _unitOfWork.Users.GetUserByUsername(username);
             if (user == null)
             {
                 message = "User not found";
                 return false;
             }
-            if (user.Password != oldpassword)
+            if (!PasswordHelper.VerifyPassword(oldpassword, user.Password))
             {
                 message = "Old password is incorrect";
                 return false;
@@ -263,12 +289,12 @@ namespace BL
                 message = "New passwords do not match";
                 return  false;
             }
-            if (oldpassword == newpassword)
+            if (PasswordHelper.VerifyPassword(newpassword, user.Password))
             {
                 message = "New password cannot be the same as the old password";
                 return false;
             }
-            _unitOfWork.Users.UpdatePassword(user, newpassword);
+            _unitOfWork.Users.UpdatePassword(user, hashedPassword);
             _unitOfWork.Save();
             message = "Password changed successfully";
             return true;
