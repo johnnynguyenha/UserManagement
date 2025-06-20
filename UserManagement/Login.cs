@@ -33,9 +33,9 @@ namespace UserManagement
         {
             string username = textBox1.Text;
             string password = passwordBox.Text;
-            if (_userService.Login(username, password, out string message))
+            User user = _userService.Login(username, password, out string message);
+            if (user != null)
             {
-                var user = _userService.GetUserByUsername(username);
                 loggedInForm loginForm = new loggedInForm(user, _userService, this);
                 loginForm.StartPosition = FormStartPosition.CenterScreen;
                 loginForm.Show();

@@ -20,6 +20,9 @@ namespace UserManagement
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Database.SetInitializer(new CreateDatabaseIfNotExists<DataContext>());
+
             DataContext context = new DataContext();
             UnitOfWork unitOfWork = new UnitOfWork(context);
             UserService userService = new UserService(unitOfWork);

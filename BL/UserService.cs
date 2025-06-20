@@ -54,26 +54,26 @@ namespace BL
         }
 
         // function that logs in user. return true if successful, false otherwise.
-        public bool Login(string username, string password, out string message)
+        public User Login(string username, string password, out string message)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 message = "Empty Field";
-                return false;
+                return null;
             }
             var user = _unitOfWork.Users.GetUserByUsername(username);
             if (user == null)
             {
                 message = "Username does not exist";
-                return false; 
+                return null; 
             }
             if (user.Password != password)
             {
                 message = "Username and Password do not match";
-                return false;
+                return null;
             }
             message = "Login Success";
-            return true;
+            return user;
         }
 
         // function that registers a new user. return true if successful, false otherwise.
