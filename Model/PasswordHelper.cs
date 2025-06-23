@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BCrypt.Net;
-namespace BL
+
+namespace Model
 {
     public static class PasswordHelper
     {

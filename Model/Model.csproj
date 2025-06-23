@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="LogHelper.cs" />
+    <Compile Include="PasswordHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

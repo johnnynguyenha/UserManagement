@@ -37,9 +37,9 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
-            catch (DbException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in ResetPassword", ex);
                 message = "An error occurred when trying to retrieve the user";
@@ -66,7 +66,7 @@ namespace BL
                 _unitOfWork.Users.UpdatePassword(user, hashedPassword);
                 _unitOfWork.Save();
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in ResetPassword for user {username} in ResetPassword", ex);
                 message = "An error occurred while resetting the password";
@@ -89,13 +89,13 @@ namespace BL
                 User user;
                 try
                 {
-                    var user = _unitOfWork.Users.GetUserByUsername(username);
+                    user = _unitOfWork.Users.GetUserByUsername(username);
                 }
-                catch (DbException ex)
+                catch (Exception ex)
                 {
                     log.Error($"Exception in retrieving User {username} in Login", ex);
                     message = "An error occurred when trying to retrieve the user";
-                    return false;
+                    return null;
                 }
                 if (user == null)
                 {
@@ -129,9 +129,9 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in Register", ex);
                 message = "An error occurred when trying to retrieve the user";
@@ -153,7 +153,7 @@ namespace BL
                 _unitOfWork.Users.CreateUser(username, hashedPassword, "User");
                 _unitOfWork.Save();
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in Registering for user {username} in Register", ex);
                 message = "Error occurred when trying to register.";
@@ -169,12 +169,12 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
-            catch (DbException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in DelteAccount", ex);
-                message = "An error occurred when trying to retrieve the user";
+                string message = "An error occurred when trying to retrieve the user";
                 return false;
             }
             if (user == null)
@@ -196,7 +196,7 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in deleting User {username} in DeleteAccount", ex);
-                message = "An error occurred when trying to delete the user ";
+                string message = "An error occurred when trying to delete the user ";
                 return false;
             }
         }
@@ -214,8 +214,8 @@ namespace BL
             }
             catch (Exception ex)
             {
-                log.Error($"Exception in retrieving {username}'s username in GetUserName", ex);
-                message = "An error occurred when trying to retrieve the username";
+                log.Error($"Exception in retrieving the username in GetUserName", ex);
+                string message = "An error occurred when trying to retrieve the username";
                 return null;
             }
         }
@@ -230,7 +230,7 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving user list in GetUserList", ex);
-                message = "An error occurred when trying to retrieve the userlist";
+                string message = "An error occurred when trying to retrieve the userlist";
                 return null;
             }
         }
@@ -245,7 +245,7 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving user list in GetUserListAsync", ex);
-                message = "An error occurred when trying to retrieve the userlist";
+                string message = "An error occurred when trying to retrieve the userlist";
                 return null;
             }
         }
@@ -260,7 +260,7 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving User's role in GetRole", ex);
-                message = "An error occurred when trying to retrieve the role of the user";
+                string message = "An error occurred when trying to retrieve the role of the user";
                 return null;
             }
         }
@@ -284,10 +284,10 @@ namespace BL
                 _unitOfWork.Users.UpdateRole(user, role);
                 _unitOfWork.Save();
                 return true;
-            } catch (DbUpdateException ex)
+            } catch (Exception ex)
             {
                 log.Error($"Exception in updating the details of user {username} in ChangeDetails.", ex);
-                message = "Could not change details"
+                string message = "Could not change details"
 ;               return false;
             }
         }
@@ -309,10 +309,10 @@ namespace BL
                 _unitOfWork.Save();
                 return true;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error("Exception in updating the User's details in ChangeDetailsNoPassword", ex);
-                message = "An error occurred when trying to updte the Users";
+                string message = "An error occurred when trying to updte the Users";
                 return false;
             }
         }
@@ -323,13 +323,13 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in GetUserByUsername", ex);
-                message = "An error occurred when trying to retrieve the user";
-                return false;
+                string message = "An error occurred when trying to retrieve the user";
+                return null;
             }
             if (user == null)
             {
@@ -343,12 +343,12 @@ namespace BL
             User user;
             try
             {
-                var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
+                user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
             }
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in GetUserByUsernameAsync", ex);
-                message = "An error occurred when trying to retrieve the user";
+                string message = "An error occurred when trying to retrieve the user";
                 return null;
             }
             if (user == null)
@@ -366,13 +366,13 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} when Setting Password.", ex);
-                message = "An error occurred when trying to retrieve the user";
-                return false;
+                string message = "An error occurred when trying to retrieve the user";
+                return;
             }
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
@@ -387,11 +387,11 @@ namespace BL
                 _unitOfWork.Users.UpdatePassword(user, hashedPassword);
                 _unitOfWork.Save();
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in updating User {username} password when in SetPassword", ex);
-                message = "An error occurred when trying to update the password.";
-                return false;
+                string message = "An error occurred when trying to update the password.";
+                return;
             }
         }
 
@@ -401,13 +401,13 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} when GetPassword.", ex);
-                message = "An error occurred when trying to retrieve the user's password";
-                return false;
+                string message = "An error occurred when trying to retrieve the user's password";
+                return null;
             }
             if (user == null)
             {
@@ -423,7 +423,7 @@ namespace BL
             User user;
             try
             {
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                user = _unitOfWork.Users.GetUserByUsername(username);
             }
             catch (Exception ex)
             {
@@ -456,7 +456,7 @@ namespace BL
                 _unitOfWork.Users.UpdatePassword(user, hashedPassword);
                 _unitOfWork.Save();
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 log.Error($"Exception in changing the User {username} password in ChangePassword", ex);
                 message = "An error occurred when trying to change the password";
