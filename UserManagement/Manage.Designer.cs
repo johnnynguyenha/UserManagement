@@ -211,9 +211,9 @@
             // 
             // changePasswordButton
             // 
-            this.changePasswordButton.Location = new System.Drawing.Point(598, 324);
+            this.changePasswordButton.Location = new System.Drawing.Point(550, 324);
             this.changePasswordButton.Name = "changePasswordButton";
-            this.changePasswordButton.Size = new System.Drawing.Size(127, 32);
+            this.changePasswordButton.Size = new System.Drawing.Size(175, 32);
             this.changePasswordButton.TabIndex = 19;
             this.changePasswordButton.Text = "Change Password";
             this.changePasswordButton.UseVisualStyleBackColor = true;

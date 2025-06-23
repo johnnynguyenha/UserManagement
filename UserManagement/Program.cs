@@ -35,7 +35,7 @@ namespace UserManagement
                     string path = context.Database.Connection.DataSource;
                     log.Info("SQLite DB path: " + path);
 
-                    // Force database initialization
+                    // force database initialization
                     log.Info("Initializing database");
                     context.Database.Initialize(force: false);
 

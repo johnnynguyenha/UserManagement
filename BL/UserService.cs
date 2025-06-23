@@ -450,6 +450,50 @@ namespace BL
             }
             message = "Password changed successfully";
             return true;
-        }   
+        }
+
+        // function to change password without requiring old password (admin)
+        public bool ChangePasswordNoOld(string username, string newpassword, string confirmpassword, out string message)
+        {
+            string hashedPassword = PasswordHelper.HashPassword(newpassword);
+            User user;
+            try
+            {
+                user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} when ChangePassword.", ex);
+                message = "An error occurred when trying to change the password";
+                return false;
+            }
+            if (user == null)
+            {
+                message = "User not found";
+                return false;
+            }
+            if (newpassword != confirmpassword)
+            {
+                message = "New passwords do not match";
+                return false;
+            }
+            if (PasswordHelper.VerifyPassword(newpassword, user.Password))
+            {
+                message = "New password cannot be the same as the old password";
+                return false;
+            }
+            try
+            {
+                _unitOfWork.Users.UpdatePassword(user, hashedPassword);
+                _unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in changing the User {username} password in ChangePassword", ex);
+                message = "An error occurred when trying to change the password";
+            }
+            message = "Password changed successfully";
+            return true;
+        }
     }
 }

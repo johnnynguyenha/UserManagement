@@ -55,6 +55,7 @@
             this.applyButton.TabIndex = 23;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = true;
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // confirmPasswordLabel
             // 
