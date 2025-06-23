@@ -101,7 +101,9 @@ namespace UserManagement
             addressBox.Visible = setting;
             roleBox.Visible = setting;
             applyButton.Visible = setting;
+            changePasswordButton.Visible = setting;
             _editVisible = setting;
+            passwordBox.Enabled = false;
         }
 
         // function to fill boxes with user details.
@@ -109,7 +111,6 @@ namespace UserManagement
         {
             if (user == null) return;
             usernameBox.Text = user.UserName;
-            passwordBox.Text = user.Password;
             firstNameBox.Text = user.FirstName;
             lastNameBox.Text = user.LastName;
             phoneBox.Text = user.PhoneNumber;
@@ -226,6 +227,18 @@ namespace UserManagement
             }
             FillListAsync();
             SetVisibility(false);
+        }
+
+        private void changePasswordButton_Click(object sender, EventArgs e)
+        {
+            if (_selecteduser == null)
+            {
+                MessageBox.Show("No user selected to change password");
+                return;
+            }
+            AdminChangePassword changePassword = new AdminChangePassword(_userService, _selecteduser);
+            changePassword.StartPosition = FormStartPosition.CenterScreen;
+            changePassword.ShowDialog();
         }
     }
 }

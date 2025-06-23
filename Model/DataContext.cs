@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite.CodeFirst;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -7,14 +8,21 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class DataContext: DbContext
+    public class DataContext : DbContext
     {
-        // connects app to database
-            public DbSet<User> Users { get; set; } // collection of objects type User. also creates Users table (Based on the plural of the class)
-            public DataContext() // add parameter if you want to specify which connection string
-            {
+        public DbSet<User> Users { get; set; }
 
-            }
+        public DataContext() : base("name=DataContext")
+        {
+
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            var sqliteInitializer = new SqliteCreateDatabaseIfNotExists<DataContext>(modelBuilder);
+            Database.SetInitializer(sqliteInitializer);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
-
+}

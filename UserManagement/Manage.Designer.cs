@@ -47,6 +47,7 @@
             this.roleLabel = new System.Windows.Forms.Label();
             this.roleBox = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.changePasswordButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBox1
@@ -208,11 +209,22 @@
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.TabIndex = 18;
             // 
+            // changePasswordButton
+            // 
+            this.changePasswordButton.Location = new System.Drawing.Point(598, 324);
+            this.changePasswordButton.Name = "changePasswordButton";
+            this.changePasswordButton.Size = new System.Drawing.Size(127, 32);
+            this.changePasswordButton.TabIndex = 19;
+            this.changePasswordButton.Text = "Change Password";
+            this.changePasswordButton.UseVisualStyleBackColor = true;
+            this.changePasswordButton.Click += new System.EventHandler(this.changePasswordButton_Click);
+            // 
             // Manage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.changePasswordButton);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.roleLabel);
             this.Controls.Add(this.roleBox);
@@ -260,5 +272,6 @@
         private System.Windows.Forms.Label roleLabel;
         private System.Windows.Forms.TextBox roleBox;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Button changePasswordButton;
     }
 }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Entity;
+using SQLite.CodeFirst;
 using BL;
 using DAL;
 using Model;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
-
 namespace UserManagement
 {
     internal static class Program
@@ -18,6 +18,7 @@ namespace UserManagement
         /// The main entry point for the application.
         /// </summary>
         private static readonly log4net.ILog log = LogHelper.GetLogger();
+
         [STAThread]
         static void Main()
         {
@@ -28,23 +29,49 @@ namespace UserManagement
             try
             {
                 log.Info("Setting Up Database");
-                Database.SetInitializer(new CreateDatabaseIfNotExists<DataContext>());
-                
-                DataContext context = new DataContext();
-                UnitOfWork unitOfWork = new UnitOfWork(context);
-                UserService userService = new UserService(unitOfWork);
 
-                log.Info("Checking for default user");
-                // ensure default admin account is created
-                var adminUser = context.Users.FirstOrDefault(u => u.UserName == "Admin");
-                if (adminUser == null)
+                using (DataContext context = new DataContext())
                 {
-                    log.Info("No Admin Account Found, Creating Admin Account");
-                    unitOfWork.Users.CreateUser("admin", PasswordHelper.HashPassword("password"), "Admin");
-                    unitOfWork.Save();
+                    string path = context.Database.Connection.DataSource;
+                    log.Info("SQLite DB path: " + path);
+
+                    // Force database initialization
+                    log.Info("Initializing database");
+                    context.Database.Initialize(force: false);
+
+                    if (!context.Database.Exists())
+                    {
+                        log.Info("Database does not exist, creating database");
+                        context.Database.Create();
+                        log.Info("Database created successfully");
+                    }
+                    else
+                    {
+                        log.Info("Database already exists");
+                    }
+
+                    log.Info("Checking for default user");
+                    // ensure default admin account is created
+                    var adminUser = context.Users.FirstOrDefault(u => u.UserName == "admin");
+                    if (adminUser == null)
+                    {
+                        log.Info("No Admin Account Found, Creating Admin Account");
+                        var newUser = new User
+                        {
+                            UserName = "admin",
+                            Password = PasswordHelper.HashPassword("password"),
+                            Role = "Admin",
+                        };
+                        context.Users.Add(newUser);
+                        context.SaveChanges();
+                        log.Info("Admin account created");
+                    }
                 }
 
-                context.Users.FirstOrDefault(); // warmup entity framework
+                DataContext serviceContext = new DataContext();
+                UnitOfWork unitOfWork = new UnitOfWork(serviceContext);
+                UserService userService = new UserService(unitOfWork);
+
                 loginForm login = new loginForm(userService);
                 login.StartPosition = FormStartPosition.CenterScreen;
                 log.Info("Launching Form");
@@ -57,10 +84,4 @@ namespace UserManagement
             }
         }
     }
-
 }
-
-// Checklist []
-// Entity Framework [/]
-// Dependency Injection [?]
-// Unit of Work [?]
