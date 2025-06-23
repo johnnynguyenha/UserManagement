@@ -174,7 +174,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in DelteAccount", ex);
-                string message = "An error occurred when trying to retrieve the user";
                 return false;
             }
             if (user == null)
@@ -196,7 +195,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in deleting User {username} in DeleteAccount", ex);
-                string message = "An error occurred when trying to delete the user ";
                 return false;
             }
         }
@@ -215,7 +213,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving the username in GetUserName", ex);
-                string message = "An error occurred when trying to retrieve the username";
                 return null;
             }
         }
@@ -230,7 +227,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving user list in GetUserList", ex);
-                string message = "An error occurred when trying to retrieve the userlist";
                 return null;
             }
         }
@@ -245,7 +241,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving user list in GetUserListAsync", ex);
-                string message = "An error occurred when trying to retrieve the userlist";
                 return null;
             }
         }
@@ -260,7 +255,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in retrieving User's role in GetRole", ex);
-                string message = "An error occurred when trying to retrieve the role of the user";
                 return null;
             }
         }
@@ -287,7 +281,6 @@ namespace BL
             } catch (Exception ex)
             {
                 log.Error($"Exception in updating the details of user {username} in ChangeDetails.", ex);
-                string message = "Could not change details"
 ;               return false;
             }
         }
@@ -312,7 +305,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error("Exception in updating the User's details in ChangeDetailsNoPassword", ex);
-                string message = "An error occurred when trying to updte the Users";
                 return false;
             }
         }
@@ -328,7 +320,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in GetUserByUsername", ex);
-                string message = "An error occurred when trying to retrieve the user";
                 return null;
             }
             if (user == null)
@@ -348,7 +339,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} in GetUserByUsernameAsync", ex);
-                string message = "An error occurred when trying to retrieve the user";
                 return null;
             }
             if (user == null)
@@ -371,7 +361,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} when Setting Password.", ex);
-                string message = "An error occurred when trying to retrieve the user";
                 return;
             }
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -390,7 +379,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in updating User {username} password when in SetPassword", ex);
-                string message = "An error occurred when trying to update the password.";
                 return;
             }
         }
@@ -406,7 +394,6 @@ namespace BL
             catch (Exception ex)
             {
                 log.Error($"Exception in retrieving User {username} when GetPassword.", ex);
-                string message = "An error occurred when trying to retrieve the user's password";
                 return null;
             }
             if (user == null)
