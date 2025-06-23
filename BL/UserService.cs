@@ -34,13 +34,22 @@ namespace BL
                 message = "Empty Field";
                 return false;
             }
-            var user = _unitOfWork.Users.GetUserByUsername(username);
-
-            if (user == null)
+            User user;
+            try
             {
-                message = "Username does not exist";
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (DbException ex)
+            {
+                log.Error($"Exception in retrieving User {username} in ResetPassword", ex);
+                message = "An error occurred when trying to retrieve the user";
                 return false;
             }
+            if (user == null)
+                {
+                    message = "Username does not exist";
+                    return false;
+                }
             if (newpassword != confirmpassword)
             {
                 message = "Passwords do not match";
@@ -51,15 +60,15 @@ namespace BL
                 message = "New password is the same as the old password";
                 return false;
             }
+            string hashedPassword = PasswordHelper.HashPassword(newpassword);
             try
             {
-                string hashedPassword = PasswordHelper.HashPassword(newpassword);
                 _unitOfWork.Users.UpdatePassword(user, hashedPassword);
                 _unitOfWork.Save();
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                log.Error($"Exception in ResetPassword for user {username}", ex);
+                log.Error($"Exception in ResetPassword for user {username} in ResetPassword", ex);
                 message = "An error occurred while resetting the password";
                 return false;
             }
@@ -77,7 +86,17 @@ namespace BL
                     message = "Empty Field";
                     return null;
                 }
-                var user = _unitOfWork.Users.GetUserByUsername(username);
+                User user;
+                try
+                {
+                    var user = _unitOfWork.Users.GetUserByUsername(username);
+                }
+                catch (DbException ex)
+                {
+                    log.Error($"Exception in retrieving User {username} in Login", ex);
+                    message = "An error occurred when trying to retrieve the user";
+                    return false;
+                }
                 if (user == null)
                 {
                     message = "Username does not exist";
@@ -93,7 +112,7 @@ namespace BL
             }
             catch (Exception ex)
             {
-                log.Error($"Exception in Login for user {username}", ex);
+                log.Error($"Exception in Login for user {username} in Login", ex);
                 message = "An error occurred while logging in";
                 return null;
             }
@@ -107,8 +126,18 @@ namespace BL
                 message = "Field Empty";
                 return false;
             }
-            var exists = _unitOfWork.Users.GetUserByUsername(username);
-            if (exists != null)
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (DbUpdateException ex)
+            {
+                log.Error($"Exception in retrieving User {username} in Register", ex);
+                message = "An error occurred when trying to retrieve the user";
+                return false;
+            }
+            if (user != null)
             {
                 message = "Username Already Exists";
                 return false;
@@ -119,8 +148,17 @@ namespace BL
                 return false;
             }
             string hashedPassword = PasswordHelper.HashPassword(password);
-            _unitOfWork.Users.CreateUser(username, hashedPassword, "User");
-            _unitOfWork.Save();
+            try
+            {
+                _unitOfWork.Users.CreateUser(username, hashedPassword, "User");
+                _unitOfWork.Save();
+            }
+            catch (DbUpdateException ex)
+            {
+                log.Error($"Exception in Registering for user {username} in Register", ex);
+                message = "Error occurred when trying to register.";
+                return false;
+            }
             message = "Register was Successful";
             return true;
         }
@@ -128,48 +166,103 @@ namespace BL
         // function that deletes a user account. return true if successful, false otherwise.
         public bool DeleteAccount(string username)
         {
-            var user = _unitOfWork.Users.GetUserByUsername(username);
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (DbException ex)
+            {
+                log.Error($"Exception in retrieving User {username} in DelteAccount", ex);
+                message = "An error occurred when trying to retrieve the user";
+                return false;
+            }
             if (user == null)
             {
                 throw new ArgumentException("Cannot Delete Account. User not found");
             }
-            if (_unitOfWork.Users.DeleteUser(user))
+            try
             {
-                _unitOfWork.Save();
-                return true;
-            } else
+                if (_unitOfWork.Users.DeleteUser(user))
+                {
+                    _unitOfWork.Save();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
             {
+                log.Error($"Exception in deleting User {username} in DeleteAccount", ex);
+                message = "An error occurred when trying to delete the user ";
                 return false;
             }
-            
         }
 
         // function that gets the username of a user. return the username as a string.
         public string GetUserName(User user)
         {
-            if (user == null)
+            try
             {
+                if (user == null)
+                {
+                    return null;
+                }
+                return _unitOfWork.Users.GetUsername(user);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving {username}'s username in GetUserName", ex);
+                message = "An error occurred when trying to retrieve the username";
                 return null;
             }
-            return _unitOfWork.Users.GetUsername(user);
         }
 
         // function that gets a userlist. returns a list of users.
         public List<User> GetUserList()
         {
-            return _unitOfWork.Users.GetUsers();
+            try
+            {
+                return _unitOfWork.Users.GetUsers();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Exception in retrieving user list in GetUserList", ex);
+                message = "An error occurred when trying to retrieve the userlist";
+                return null;
+            }
         }
 
         // function that gets the userlist asynchronously. returns a list of users.
         public async Task<List<User>> GetUserListAsync()
         {
-            return await _unitOfWork.Users.GetUsersAsync();
+            try
+            {
+                return await _unitOfWork.Users.GetUsersAsync();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Exception in retrieving user list in GetUserListAsync", ex);
+                message = "An error occurred when trying to retrieve the userlist";
+                return null;
+            }
         }
 
         // function that gets the role of a user. returns the role as a string.
         public string GetRole(User user)
         {
-            return _unitOfWork.Users.GetRole(user);
+            try
+            {
+                return _unitOfWork.Users.GetRole(user);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Exception in retrieving User's role in GetRole", ex);
+                message = "An error occurred when trying to retrieve the role of the user";
+                return null;
+            }
         }
 
         // function that changes user details. returns true if successful, false otherwise.
@@ -191,9 +284,11 @@ namespace BL
                 _unitOfWork.Users.UpdateRole(user, role);
                 _unitOfWork.Save();
                 return true;
-            } catch
+            } catch (DbUpdateException ex)
             {
-                return false;
+                log.Error($"Exception in updating the details of user {username} in ChangeDetails.", ex);
+                message = "Could not change details"
+;               return false;
             }
         }
 
@@ -214,8 +309,10 @@ namespace BL
                 _unitOfWork.Save();
                 return true;
             }
-            catch
+            catch (DbUpdateException ex)
             {
+                log.Error("Exception in updating the User's details in ChangeDetailsNoPassword", ex);
+                message = "An error occurred when trying to updte the Users";
                 return false;
             }
         }
@@ -223,20 +320,40 @@ namespace BL
         // function that gets a user by username. returns the user object.
         public User GetUserByUsername(string username)
         {
-            var user = _unitOfWork.Users.GetUserByUsername(username);
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} in GetUserByUsername", ex);
+                message = "An error occurred when trying to retrieve the user";
+                return false;
+            }
             if (user == null)
             {
-                throw new ArgumentException("Cannot find User. User not found");
+                log.Error("Cannot find User. User not found");
             }
             return user;
         }
 
         public async Task<User> GetUserByUsernameAsync(string username)
         {
-            var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
+            User user;
+            try
+            {
+                var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} in GetUserByUsernameAsync", ex);
+                message = "An error occurred when trying to retrieve the user";
+                return null;
+            }
             if (user == null)
             {
-                throw new ArgumentException("Cannot find User. User not found");
+                log.Error("Cannot find User. User not found");
             }
             return user;
         }
@@ -246,23 +363,52 @@ namespace BL
         public void SetPassword(string username, string password)
         {
             string hashedPassword = PasswordHelper.HashPassword(password);
-            var user = _unitOfWork.Users.GetUserByUsername(username);
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} when Setting Password.", ex);
+                message = "An error occurred when trying to retrieve the user";
+                return false;
+            }
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                throw new ArgumentException("Username and password cannot be empty");
+                log.Error("Username and password cannot be empty");
             }
             if (user == null)
             {
-                throw new ArgumentException("Cannot Set Password. User not found");
+                log.Error("Cannot Set Password. User not found");
             }
-            _unitOfWork.Users.UpdatePassword(user, hashedPassword);
-            _unitOfWork.Save();
+            try
+            {
+                _unitOfWork.Users.UpdatePassword(user, hashedPassword);
+                _unitOfWork.Save();
+            }
+            catch (DbUpdateException ex)
+            {
+                log.Error($"Exception in updating User {username} password when in SetPassword", ex);
+                message = "An error occurred when trying to update the password.";
+                return false;
+            }
         }
 
         // function that gets password of user by username. returns the password as a string.
         public string GetPassword(string username)
         {
-            var user = _unitOfWork.Users.GetUserByUsername(username);
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} when GetPassword.", ex);
+                message = "An error occurred when trying to retrieve the user's password";
+                return false;
+            }
             if (user == null)
             {
                 throw new ArgumentException("User not found");
@@ -274,7 +420,17 @@ namespace BL
         public bool ChangePassword(string username, string oldpassword, string newpassword, string confirmpassword, out string message)
         {
             string hashedPassword = PasswordHelper.HashPassword(newpassword);
-            var user = _unitOfWork.Users.GetUserByUsername(username);
+            User user;
+            try
+            {
+                var user = _unitOfWork.Users.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception in retrieving User {username} when ChangePassword.", ex);
+                message = "An error occurred when trying to change the password";
+                return false;
+            }
             if (user == null)
             {
                 message = "User not found";
@@ -295,8 +451,16 @@ namespace BL
                 message = "New password cannot be the same as the old password";
                 return false;
             }
-            _unitOfWork.Users.UpdatePassword(user, hashedPassword);
-            _unitOfWork.Save();
+            try
+            {
+                _unitOfWork.Users.UpdatePassword(user, hashedPassword);
+                _unitOfWork.Save();
+            }
+            catch (DbUpdateException ex)
+            {
+                log.Error($"Exception in changing the User {username} password in ChangePassword", ex);
+                message = "An error occurred when trying to change the password";
+            }
             message = "Password changed successfully";
             return true;
         }   
